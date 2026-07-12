@@ -8,12 +8,21 @@
 </p>
 
 <p align="center">
-  <a href="https://www.yuemutuku.com" target="_blank">🌐 线上地址：yuemutuku.com</a>
+  <a href="https://www.yuemutuku.com" target="_blank">🌐 线上地址</a>
   &nbsp;|&nbsp;
   <a href="#快速启动">🚀 快速启动</a>
   &nbsp;|&nbsp;
   <a href="#api-接口">📡 API 文档</a>
 </p>
+
+## 🔗 项目仓库
+
+| 仓库 | 说明 |
+|------|------|
+| [yuemu-picture-backend](https://github.com/humenglover/yuemu-picture-backend) | Java 后端服务（Spring Boot） |
+| [yuemu-picture-frontend](https://github.com/humenglover/yuemu-picture-frontend) | Web 前端（Vue） |
+| [yuemu-picture-ai-service](https://github.com/humenglover/yuemu-picture-ai-service) | Python AI 服务（本仓库） |
+| [yuemu-picture-official-docs](https://github.com/humenglover/yuemu-picture-official-docs) | 官方文档站 |
 
 ---
 
