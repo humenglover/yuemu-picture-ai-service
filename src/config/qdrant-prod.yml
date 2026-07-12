@@ -1,0 +1,2 @@
+# Qdrant 生产环境配置（Docker 内部容器名互联，端口不向外暴露）
+qdrant_url: "http://qdrant:6333"

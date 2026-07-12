@@ -1,0 +1,52 @@
+--index-url https://mirrors.cloud.tencent.com/pypi/simple/ --trusted-host mirrors.cloud.tencent.com
+
+# Web核心
+fastapi
+uvicorn
+sse-starlette
+python-multipart
+
+# 数据验证
+pydantic
+PyYAML
+
+# 文档与解析
+pypdf
+python-docx
+beautifulsoup4
+markdown
+
+# 向量数据库与 LangChain 核心
+qdrant-client==1.18.0
+langchain-qdrant==1.1.0
+langchain
+langchain-community
+langchain-core
+langchain-text-splitters
+langchain-openai
+
+# AI 模型驱动 (阿里通义支持)
+dashscope
+openai
+tencentcloud-sdk-python
+
+# Agent 架构
+tavily-python
+langgraph
+
+# 图像处理
+opencv-python-headless
+numpy
+pillow
+exifread
+
+# Hybrid Search（纯 BM25 + 向量融合，无需额外模型）
+rank-bm25
+jieba
+
+# 环境变量管理
+python-dotenv
+
+# 系统监控
+psutil
+piexif

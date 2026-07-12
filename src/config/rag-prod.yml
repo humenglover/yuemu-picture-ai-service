@@ -1,0 +1,6 @@
+# FastAPI配置（服务器生产环境）
+fastapi_host: 0.0.0.0  # 服务器环境必须绑定 0.0.0.0
+fastapi_port: 8001
+java_backend_url: http://yuemu-picture-backend:8080  # Java后端生产地址 (Docker内部服务互通，无需暴露公网端口)
+
+# 备注：服务器生产环境下，Java 端 context-path 通常为 /，请根据实际部署调整

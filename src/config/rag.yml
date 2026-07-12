@@ -1,0 +1,15 @@
+# 默认聊天模型（阿里通义大模型，原 qwen3.5-flash）
+# 注意：qwen_api_key 已迁移到环境变量 QWEN_API_KEY，请勿在此处填写真实密钥
+chat_model_name: qwen3.5-flash
+embedding_model_name: text-embedding-v3
+qwen_temperature: 0.1
+qwen_max_tokens: 2048
+# DeepSeek支持思考模式，可通过extra_body参数启用
+enable_thinking: false
+
+# FastAPI配置（Java联调专用）
+fastapi_host: 0.0.0.0  # 本地回环地址
+fastapi_port: 8001     # 固定联调端口
+java_backend_url: http://127.0.0.1:8123/api  # Java后端接口地址
+
+# 备注：无上下文相关配置，会话全由Java侧Redis/MySQL管理，仅适配Python 3.10，绑定到本地回环地址
