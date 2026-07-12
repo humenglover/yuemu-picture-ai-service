@@ -1,141 +1,202 @@
-# 悦木 Python AI 服务
+<p align="center">
+  <img src="https://static.yuemutuku.com/logo.png" alt="悦木图库" height="80" onerror="this.style.display='none'">
+</p>
 
-## 项目介绍
-悦木图片管理系统的 Python AI 子服务，基于 FastAPI 构建。提供 RAG 智能客服问答、知识库管理、YOLO 目标检测、AI 图像处理（去背景、人脸模糊、换背景）等能力，作为 Java 后端的 AI 引擎层独立部署运行。
+<h1 align="center">悦木图库 AI 服务</h1>
+<p align="center">
+  <strong>轻量级社交图库管理系统的智能引擎</strong>
+</p>
 
-## 技术栈
-- **Web 框架**：FastAPI + Uvicorn
-- **大模型**：通义千问（阿里云 DashScope）
-- **向量数据库**：DashScope Embeddings + 本地向量存储
-- **RAG 框架**：LangChain（Prompt 模板、Chain、Agent）
-- **目标检测**：YOLOv8（ONNX Runtime 推理）
-- **图像处理**：rembg（去背景）、OpenCV（人脸检测/模糊）、MODNet（换背景）
-- **并发处理**：ThreadPoolExecutor 线程池
+<p align="center">
+  <a href="https://www.yuemutuku.com" target="_blank">🌐 线上地址：yuemutuku.com</a>
+  &nbsp;|&nbsp;
+  <a href="#快速启动">🚀 快速启动</a>
+  &nbsp;|&nbsp;
+  <a href="#api-接口">📡 API 文档</a>
+</p>
 
-## API 接口一览
+---
 
-### RAG 智能问答
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/rag/sync` | 同步问答（阻塞返回完整回答） |
-| POST | `/api/rag/stream` | 流式问答（SSE 逐字输出） |
-| POST | `/api/rag/summarize` | 专用摘要生成（绕过知识库约束，供超长记忆使用） |
+## 📖 项目介绍
 
-### 知识库管理
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/knowledge/upload` | 上传知识库文件（TXT/PDF 等） |
-| GET | `/api/knowledge/list` | 获取已上传的知识库文件列表 |
-| POST | `/api/knowledge/delete` | 按 MD5 删除指定知识库文件 |
-| POST | `/api/knowledge/clear-all` | 清空所有知识库文件 |
-| GET | `/api/vector/verify/{file_md5}` | 验证向量元数据 |
+悦木图库 Python AI 子服务，基于 **FastAPI + LangChain ReAct Agent** 构建。提供 RAG 智能客服问答、知识库管理、目标检测、AI 图像处理（去背景、人脸模糊、换背景、图片增强）、AI 生图、语音合成（TTS）等能力，作为 [悦木图库](https://www.yuemutuku.com) 的 AI 引擎层独立部署运行。
 
-### YOLO 目标检测
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/yolo/detect` | 上传图片进行目标检测 |
-| GET | `/api/yolo/detect-url` | 通过 URL 进行目标检测 |
+> 🖼️ **线上产品**：[https://www.yuemutuku.com](https://www.yuemutuku.com) — 一个轻量级的社交图库平台，支持图片上传、AI 修图、智能搜索与社区分享。
 
-### AI 图像处理
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/api/ai/remove_bg` | 智能去除图片背景（返回透明 PNG） |
-| POST | `/api/ai/face_blur` | 人脸自动打马赛克 |
-| POST | `/api/ai/change_background` | 智能更换图片背景（纯色或自定义图片） |
+## 🛠 技术栈
 
-## 项目结构
-```
-python-rag/src/
-├── main.py                  # FastAPI 入口，所有路由定义
-├── config/                  # 配置文件
-│   ├── rag.yml              # RAG 核心配置（模型、API Key）
-│   ├── tool.yml             # 工具配置
-│   └── concurrency.yml      # 并发配置
-├── model/                   # 数据模型
-│   ├── factory.py           # 模型工厂（创建 LLM、Embedding）
-│   ├── dto/                 # 请求/响应 DTO
-│   └── common/              # 通用模型（ResponseWrapper 等）
-├── rag/                     # RAG 核心逻辑
-│   ├── rag_summarize.py     # RAG 摘要器（含 direct_summarize）
-│   └── vector_store.py      # 向量存储管理
-├── service/                 # 业务服务层
-│   ├── rag_service.py       # RAG 问答服务
-│   ├── knowledge_management_service.py  # 知识库管理服务
-│   ├── yolo_service.py      # YOLO 检测服务
-│   └── image_service.py     # AI 图像处理服务
-├── agent/                   # ReAct Agent
-│   └── react_agent.py       # 智能体（工具调用）
-├── prompts/                 # Prompt 模板
-├── models/                  # AI 模型文件（YOLO ONNX 等）
-├── utils/                   # 工具类（日志、文件处理）
-└── logs/                    # 运行日志
-```
+| 类别 | 技术 |
+|------|------|
+| Web 框架 | FastAPI + Uvicorn |
+| 大模型 | 通义千问（阿里云 DashScope，OpenAI 兼容协议） |
+| 向量数据库 | Qdrant + DashScope Embeddings |
+| RAG | LangChain + BM25 + RRF 混合检索 |
+| Agent | LangGraph ReAct Agent（工具调用 + 流式输出） |
+| 目标检测 | NanoDet-Plus（ONNX Runtime） |
+| 图像处理 | OpenCV、U²-Net 抠图 |
+| TTS | 腾讯云语音合成 |
+| 文本审核 | 纯 DFA 高性能过滤（万级词库） |
+| 并发 | ThreadPoolExecutor 线程池 |
 
-## 快速启动
+## 🚀 快速启动
+
+### 1. 安装依赖
+
 ```bash
-# 1. 安装依赖
-cd python-rag/src
+cd src
 pip install -r requirements.txt
-
-# 2. 配置环境变量（复制模板并填入真实密钥）
-cp .env.example .env
-# 编辑 .env 文件，填入你的 API Key
-
-# 3. 启动服务
-python main.py  # 默认 http://127.0.0.1:8001
 ```
 
-## 配置说明
+### 2. 启动 Qdrant 向量数据库
 
-### 环境变量（敏感信息，必须配置）
+```bash
+docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
+```
 
-复制 `.env.example` 为 `.env`，然后填入你的真实 API 密钥：
+### 3. 配置环境变量
+
+```bash
+cp .env.example .env
+# 编辑 .env，填入你的 API 密钥
+```
 
 | 环境变量 | 说明 | 获取地址 |
 |---------|------|---------|
-| `QWEN_API_KEY` | 通义千问 (DashScope) API Key | https://dashscope.console.aliyun.com/apiKey |
-| `TAVILY_API_KEY` | Tavily 搜索 API Key | https://app.tavily.com/home |
-| `PEXELS_API_KEY` | Pexels 图片 API Key | https://www.pexels.com/api/ |
-| `TENCENTCLOUD_SECRET_ID` | 腾讯云 Secret ID | https://console.cloud.tencent.com/cam/capi |
-| `TENCENTCLOUD_SECRET_KEY` | 腾讯云 Secret Key | https://console.cloud.tencent.com/cam/capi |
+| `QWEN_API_KEY` | 通义千问 API Key | [DashScope 控制台](https://dashscope.console.aliyun.com/apiKey) |
+| `TAVILY_API_KEY` | Tavily 搜索 Key | [Tavily](https://app.tavily.com/home) |
+| `PEXELS_API_KEY` | Pexels 图片 Key | [Pexels API](https://www.pexels.com/api/) |
+| `TENCENTCLOUD_SECRET_ID` | 腾讯云 Secret ID | [腾讯云 CAM](https://console.cloud.tencent.com/cam/capi) |
+| `TENCENTCLOUD_SECRET_KEY` | 腾讯云 Secret Key | 同上 |
 
-> ⚠️ **重要**：`.env` 文件已在 `.gitignore` 中排除，不会被提交到 Git。请勿将密钥直接写在 YAML 配置文件中。
+> ⚠️ `.env` 已加入 `.gitignore`，不会被提交到 Git。
 
-### YAML 配置文件（非敏感信息）
-
-非敏感的运行时配置仍在 `config/` 目录的 YAML 文件中：
-
-- `rag.yml` — 模型名称、温度参数、FastAPI 地址等
-- `tool.yml` — 工具参数（搜索深度、每页数量等）
-- `qdrant.yml` — 向量数据库连接配置
-- `concurrency.yml` — 线程池和并发配置
-
-### Docker 部署
-
-使用 Docker 部署时，通过 `-e` 参数或 `docker-compose.yml` 注入环境变量：
+### 4. 启动服务
 
 ```bash
+python main.py
+# 默认地址: http://localhost:8001
+# 开发模式热重载已启用，代码保存后自动重启
+```
+
+### 5. 验证
+
+```bash
+curl http://localhost:8001/
+```
+
+## 🐳 Docker 部署
+
+```bash
+# 构建镜像（不含密钥）
+docker build -t yuemu-picture-ai .
+
+# 运行时注入密钥
 docker run -d \
+  --name yuemu-picture-ai \
+  -p 8001:8001 \
   -e QWEN_API_KEY=your_key \
   -e TAVILY_API_KEY=your_key \
   -e PEXELS_API_KEY=your_key \
   -e TENCENTCLOUD_SECRET_ID=your_id \
   -e TENCENTCLOUD_SECRET_KEY=your_key \
   -e SPRING_PROFILES_ACTIVE=prod \
-  your-image-name
+  yuemu-picture-ai
 ```
 
-## 与 Java 后端的交互
-Java 后端通过 HTTP 调用本服务的各接口，配置在 `application.yml` 中：
+## 📡 API 接口
+
+### 🤖 AI 对话 & RAG
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/rag/sync` | 同步 RAG 问答 |
+| POST | `/api/rag/stream` | 流式 RAG 问答（SSE） |
+| POST | `/api/rag/summarize` | 摘要生成 |
+| POST | `/api/ai/pure-chat` | 纯 LLM 对话（不走检索） |
+| POST | `/api/ai_post/stream` | AI 一键成帖（流式） |
+| POST | `/api/ai_picture/stream` | AI 识图配文（流式） |
+| POST | `/api/ai/image-keywords` | 图片关键词提取 |
+
+### 🖼️ AI 图像处理
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/ai/remove_bg` | 智能去背景（返回 PNG） |
+| POST | `/api/ai/face_blur` | 人脸自动打码 |
+| POST | `/api/ai/change_background` | 智能换背景 |
+| POST | `/api/ai/enhance_image` | 图片清晰度增强 |
+
+### 🎯 目标检测
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/detect/objects` | 上传图片检测 |
+| GET | `/api/detect/objects-url` | URL 图片检测 |
+
+### 🔊 语音合成
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/tts` | TTS 语音合成 |
+
+### 📚 知识库管理
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/knowledge/upload` | 上传知识文件 |
+| GET | `/api/knowledge/list` | 文件列表 |
+| POST | `/api/knowledge/delete` | 删除文件 |
+| POST | `/api/knowledge/clear-all` | 清空知识库 |
+
+### 🛡 内容审核
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/api/comment/moderation` | 评论审核 |
+| POST | `/api/post/moderation` | 帖子审核 |
+
+## 📁 项目结构
+
+```
+src/
+├── main.py              # FastAPI 入口，路由定义
+├── config/              # YAML 配置文件（非敏感信息）
+├── model/
+│   ├── factory.py       # 模型工厂（LLM / Embedding）
+│   ├── dto/             # 请求/响应 DTO
+│   ├── vo/              # 视图对象
+│   └── common/          # 通用模型
+├── agent/               # ReAct Agent + 工具集
+│   ├── react_agent.py   # 智能体核心
+│   ├── biz_tool.py      # 图库业务工具
+│   ├── pexels_tool.py   # 图片搜索
+│   ├── tavily_tool.py   # 网络搜索
+│   ├── tts_tool.py      # 语音合成
+│   └── ...              # 更多工具
+├── rag/                 # RAG 检索
+│   ├── vector_store.py  # 向量存储
+│   ├── bm25_retriever.py # BM25 检索
+│   └── rrf_fusion.py   # RRF 融合
+├── service/             # 业务服务层
+├── prompts/             # Prompt 模板
+├── models/              # ONNX 模型文件
+└── utils/               # 工具类
+```
+
+## 🔗 与 Java 后端的交互
+
+Java 后端通过 HTTP 调用本服务，作为 AI 引擎层：
+
 ```yaml
 rag:
   python-service:
     base-url: "http://127.0.0.1:8001"
     sync-endpoint: "/api/rag/sync"
     stream-endpoint: "/api/rag/stream"
-    summarize-endpoint: "/api/rag/summarize"
 ```
 
-## 联系方式
-- 作者：鹿梦
+## 📧 联系方式
+
+- 作者：**鹿梦**
 - 邮箱：109484028@qq.com
+- 线上产品：[yuemutuku.com](https://www.yuemutuku.com)
